@@ -1,7 +1,6 @@
 require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -13,6 +12,9 @@ const helmet = require("helmet");
 var compression = require("compression");
 const morgan = require("morgan");
 
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
@@ -27,15 +29,17 @@ const store = new MongoDBStore({
 // setup csrf middleware
 const csrfProtection = csrf();
 
+//EJS view engine
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const authRoutes = require("./routes/auth");
-
 //Helmet helps you secure your Express apps by setting various HTTP headers
-app.use(helmet());
+app.use(
+	helmet({
+		//set contentSecurityPolicy to false to allow image URL usage
+		contentSecurityPolicy: false,
+	})
+);
 // compress all responses
 app.use(compression());
 //logger middleware function
@@ -49,6 +53,7 @@ const accessLogStream = fs.createWriteStream(
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
+//to servee up static files like css
 app.use(express.static(path.join(__dirname, "public")));
 //session middleware
 app.use(
