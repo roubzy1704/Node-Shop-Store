@@ -2,20 +2,10 @@ require("dotenv").config();
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-// const sendgridTransport = require("nodemailer-sendgrid-transport");
 const mailgunTransport = require("nodemailer-mailgun-transport");
 const { validationResult } = require("express-validator/check");
 
 const User = require("../models/user");
-
-// const transporter = nodemailer.createTransport(
-// 	sendgridTransport({
-// 		auth: {
-// 			api_key:
-// 				"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",
-// 		},
-// 	})
-// );
 
 const mailgun = nodemailer.createTransport(
 	mailgunTransport({
